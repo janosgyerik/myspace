@@ -18,7 +18,9 @@ html, body {
     height: 66px;
 }
 #footer {
+    /*
     background: url(/static/images/montage.jpg) repeat-x bottom;
+    */
 }
 
 /* Lastly, apply responsive CSS fixes as necessary */
@@ -40,8 +42,10 @@ html, body {
 }
 
 .navbar .brand {
+    /*
     background: url(/static/images/brand.png) no-repeat left;
     padding-left: 32px;
+    */
 }
 
 .gone {
