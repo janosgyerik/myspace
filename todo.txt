@@ -1,3 +1,0 @@
-favicon
-
-check out django file browsers
