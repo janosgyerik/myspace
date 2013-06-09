@@ -47,10 +47,9 @@
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     <h4>Error!</h4>
                     {% if message == 'nonlisted' %}
-                    Your email address is not on our whitelist.
-                    Note that this is normal if the site owners have not
-                    invited you explicitly.
-                    This is a private site.
+                    Your email address is not on my whitelist.
+                    Maybe I misspelled it or something.
+                    Please drop me an email and I'll fix it.
                     {% else %}
                     {{ message }}
                     {% endif %}
@@ -61,14 +60,12 @@
   
         <div class="row">
             <div class="span8">
-                <div class="alert">
-                  <button type="button" class="close" data-dismiss="alert">&times;</button>
-                  <strong>Warning!</strong> This site is strictly invitation only,
-                  as the project is designed for private use (due to copyright reasons).
-                  If you haven't been invited, you won't be able to login.
-                  However, the software running this site is <a href="https://github.com/janosgyerik/myspace">open-source</a>,
-                  and you are free to roll your own MySpace!
-                </div>
+                <p>Hi, and welcome to my personal space,
+                designed to share interesting goodies
+                with my family and friends.</p>
+                <p>You can login with OpenID,
+                using the email address where you
+                received the invitation to this page.</p>
             </div>
         </div>
   
@@ -82,8 +79,6 @@
                     <p class="pull-right"><a href="http://openid.net/what/">learn more »</a></p>
                 </div>
   
-                <p>Click on the logo of the email address you were invited by:</p>
-        
                 <div class="openid_btns">
                     <!--
                     <a title="login with Stack Exchange" href="" style="background: #fff url(http://cdn.sstatic.net/Img/openid/openid-logos.png?v=8); background-position: -1px -518px" class="stack_exchange openid_large_btn"></a>
@@ -94,6 +89,11 @@
                     -->
                     <a title="login with Yahoo" href="" data-name="yahoo" style="background: #fff url(http://cdn.sstatic.net/Img/openid/openid-logos.png?v=8); background-position: -1px -63px" class="yahoo openid_large_btn"></a>
                     <br/>
+                </div>
+                <div class="alert">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Warning!</strong> This site is strictly invitation only.
+                  Please do not share this link with others.
                 </div>
                 <hr>
             </div>
