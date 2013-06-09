@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load markup %}
+
 {% block subtitle %}{{ name }}{% endblock %}
 
 {% block main %}
@@ -21,6 +23,10 @@
             <strong>Error:</strong>
             {{ error }}
         </div>
+        {% endif %}
+
+        {% if message %}
+        <div>{{ message | markdown }}</div>
         {% endif %}
 
         {% if dirs %}

@@ -9,6 +9,9 @@ from django.core.urlresolvers import reverse
 CONTENT_ROOT = settings.CONTENT_ROOT
 CONTENT_WWWROOT = settings.CONTENT_WWWROOT
 
+MESSAGEFILE = 'message.md'
+SPECIALFILES = (MESSAGEFILE,)
+
 
 @login_required
 def folder(request, relpath=None):
@@ -22,13 +25,15 @@ class InvalidRelpathError:
     pass
 
 
-def folder_common(request, name='Home', breadcrumbs={}, dirs={}, files={}, error=None, template='explorer/folder.html'):
+def folder_common(request, relpath=None, name='Home', breadcrumbs={}, dirs={}, files={}, error=None, template='explorer/folder.html'):
+    message = get_message(relpath)
     return render_to_response(template, {
         "name": name,
         "breadcrumbs": breadcrumbs,
         "dirs": dirs,
         "files": files,
         "error": error,
+        "message": message,
         }, RequestContext(request))
 
 
@@ -57,6 +62,7 @@ def folder_for_relpath(request, relpath):
 
     return folder_common(
             request,
+            relpath=relpath,
             name=name,
             breadcrumbs=breadcrumbs,
             dirs=dirs,
@@ -103,6 +109,8 @@ def get_dirs_and_files(relpath=None):
     for item in os.listdir(basepath):
         if item.startswith('.'):
             continue
+        if item in SPECIALFILES:
+            continue
 
         path = os.path.join(basepath, item)
         if os.path.exists(path):
@@ -130,3 +138,17 @@ def get_dirs_and_files(relpath=None):
     files = sorted(files, key=lambda x: x['name'])
 
     return (dirs, files)
+
+
+def get_message(relpath=None):
+    if relpath:
+        path = os.path.join(CONTENT_ROOT, relpath, MESSAGEFILE)
+    else:
+        path = os.path.join(CONTENT_ROOT, MESSAGEFILE)
+
+    message = None
+    if os.path.isfile(path):
+        with open(path) as fh:
+            message = '\n'.join(fh.readlines())
+
+    return message

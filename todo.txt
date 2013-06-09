@@ -1,5 +1,3 @@
 favicon
 
-parse and show *.md files
-
 check out django file browsers
