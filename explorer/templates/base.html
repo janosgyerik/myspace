@@ -16,7 +16,9 @@
                 {% if user.is_superuser %}
                 <li><a href="/admin/">Admin</a></li>
                 {% endif %}
-                <li><a href="{% url 'explore_private' '' %}">Private</a></li>
+                <li><a href="{% url 'folder' 'linux-journal' %}">Linux Journal</a></li>
+                <li><a href="{% url 'folder' 'music' %}">Music</a></li>
+                <li><a href="{% url 'folder' 'books' %}">Books</a></li>
             </ul>
             <p class="navbar-text pull-right">
             {% if user.is_authenticated %}

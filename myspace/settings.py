@@ -176,9 +176,8 @@ LOGGING = {
 
 ### project specific custom settings
 
-MEDIA_ROOT = os.path.join(DIRNAME, '..', 'static', 'media')
-MEDIA_WWWROOT = '/static/media'
-MEDIA_EXT = ('mp3', 'ogg')
+CONTENT_ROOT = os.path.join(DIRNAME, '..', 'static', 'content')
+CONTENT_WWWROOT = '/static/content'
 
 AUTHENTICATION_BACKENDS = (
         #'django_openid_auth.auth.OpenIDBackend',

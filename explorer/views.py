@@ -1,132 +1,132 @@
-from urllib import unquote
 import os
 
-#from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-#from django.contrib.auth import logout
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
-MEDIA_ROOT = settings.MEDIA_ROOT
-MEDIA_WWWROOT = settings.MEDIA_WWWROOT
-
-
-def index(request):
-    return explore_private(request)
-
-
-def explore_common(request, relpath, template='explorer/folders.html'):
-    relpath = unquote(relpath)
-    return render_to_response(template, {
-        "foldername": os.path.basename(relpath),
-        "folders": folders(relpath),
-        "files": files(relpath),
-        "locations": locations(relpath),
-        }, RequestContext(request))
+CONTENT_ROOT = settings.CONTENT_ROOT
+CONTENT_WWWROOT = settings.CONTENT_WWWROOT
 
 
 @login_required
-def explore_private(request, relpath=None):
-    if relpath is None or relpath == '':
-        relpath = 'private'
+def folder(request, relpath=None):
+    if relpath:
+        return folder_for_relpath(request, relpath)
     else:
-        relpath = 'private/' + relpath
-    return explore_common(request, relpath)
+        return folder_home(request)
 
 
-def locations(relpath=None):
-    if relpath is None:
-        return
+class InvalidRelpathError:
+    pass
 
-    import django.core.urlresolvers
-    wwwroot = django.core.urlresolvers.reverse("explorer")
 
-    locations = []
+def folder_common(request, name='Home', breadcrumbs={}, dirs={}, files={}, error=None, template='explorer/folder.html'):
+    return render_to_response(template, {
+        "name": name,
+        "breadcrumbs": breadcrumbs,
+        "dirs": dirs,
+        "files": files,
+        "error": error,
+        }, RequestContext(request))
+
+
+def folder_home(request):
+    breadcrumbs = get_breadcrumbs()
+    (dirs, files) = get_dirs_and_files()
+    return folder_common(
+            request,
+            breadcrumbs=breadcrumbs,
+            dirs=dirs,
+            files=files,
+            )
+
+
+def folder_for_relpath(request, relpath):
+    name = os.path.basename(relpath)
+    name = slug_to_name(name)
+    breadcrumbs = get_breadcrumbs(relpath)
+    try:
+        (dirs, files) = get_dirs_and_files(relpath)
+        error = None
+    except InvalidRelpathError:
+        dirs = ()
+        files = ()
+        error = 'Path does not exist: %s' % relpath
+
+    return folder_common(
+            request,
+            name=name,
+            breadcrumbs=breadcrumbs,
+            dirs=dirs,
+            files=files,
+            error=error,
+            )
+
+
+def slug_to_name(slug):
+    return slug.replace('-', ' ').title()
+
+
+def get_breadcrumbs(relpath=None):
+    wwwroot = reverse(folder, args=('',))
+
+    breadcrumbs = []
     head = relpath
-    while True:
+    while head:
         (head, tail) = os.path.split(head)
+        name = slug_to_name(tail)
         href = os.path.join(wwwroot, head, tail)
 
         item = {
-                "name": tail,
+                "name": name,
                 "href": href,
                 }
+        breadcrumbs.append(item)
 
-        locations.append(item)
+    breadcrumbs.reverse()
 
-        if head == "":
-            break
-
-    locations[0]["last"] = True
-    locations.append({
-        "name": "Home",
-        "href": wwwroot,
-        })
-    locations.reverse()
-
-    return locations
+    return breadcrumbs
 
 
-def folders(relpath=None):
-    import django.core.urlresolvers
-    wwwroot = django.core.urlresolvers.reverse("explorer")
-
-    if relpath is None:
-        mediapath = MEDIA_ROOT
+def get_dirs_and_files(relpath=None):
+    if relpath:
+        basepath = os.path.join(CONTENT_ROOT, relpath)
+        if not os.path.isdir(basepath):
+            raise InvalidRelpathError
     else:
-        mediapath = os.path.join(MEDIA_ROOT, relpath)
+        basepath = CONTENT_ROOT
 
-    folders = []
-    if os.path.isdir(mediapath):
-        for f in os.listdir(mediapath):
-            if os.path.isdir(os.path.join(mediapath, f)):
-                if relpath is None:
-                    href = os.path.join(wwwroot, f)
-                else:
-                    href = os.path.join(wwwroot, relpath, f)
-
-                folder = {
-                        "name": f,
-                        "href": href,
-                        }
-
-                folders.append(folder)
-
-    return sorted(folders, key=lambda x: x['name'])
-
-
-def files(relpath=None):
-    wwwroot = MEDIA_WWWROOT
-
-    if relpath is None:
-        mediapath = MEDIA_ROOT
-    else:
-        mediapath = os.path.join(MEDIA_ROOT, relpath)
-
-    if not os.path.isdir(mediapath):
-        return
-
+    dirs = []
     files = []
-    for filename in os.listdir(mediapath):
-        if os.path.isfile(os.path.join(mediapath, filename)):
-            if filename.startswith('.'):
-                continue
+    for item in os.listdir(basepath):
+        if item.startswith('.'):
+            continue
 
-            if relpath is None:
-                href = os.path.join(wwwroot, filename)
-            else:
-                href = os.path.join(wwwroot, relpath, filename)
+        path = os.path.join(basepath, item)
+        if os.path.exists(path):
+            info = {}
 
-            fileinfo = {
-                    "name": filename,
-                    "href": href,
-                    "size": os.path.getsize(os.path.join(mediapath, filename)),
-                    }
+            if os.path.isfile(path):
+                info['name'] = item
+                info['size'] = os.path.getsize(path)
+                if relpath:
+                    href = os.path.join(CONTENT_WWWROOT, relpath, item)
+                else:
+                    href = os.path.join(CONTENT_WWWROOT, item)
+                info['href'] = href
+                files.append(info)
+            elif os.path.isdir(path):
+                info['name'] = slug_to_name(item)
+                if relpath:
+                    args = (os.path.join(relpath, item),)
+                else:
+                    args = (item,)
+                info['href'] = reverse(folder, args=args)
+                dirs.append(info)
 
-            files.append(fileinfo)
+    dirs = sorted(dirs, key=lambda x: x['name'])
+    files = sorted(files, key=lambda x: x['name'])
 
-    return sorted(files, key=lambda x: x['name'])
-
-
-# eof
+    return (dirs, files)
