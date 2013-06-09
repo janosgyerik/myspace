@@ -188,7 +188,9 @@ AUTHENTICATION_BACKENDS = (
 
 OPENID_CREATE_USERS = True
 OPENID_UPDATE_DETAILS_FROM_SREG = True
-from accounts.views import render_failure
+def render_failure(*args, **kwargs):
+    from accounts.views import render_failure
+    return render_failure(*args, **kwargs)
 OPENID_RENDER_FAILURE = render_failure
 
 LOGIN_URL = '/accounts/login/'
