@@ -1,7 +1,8 @@
 # Local settings for myspace project.
 
-from settings import *
+from myspace.settings import *
 
+DEBUG = True
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
@@ -11,18 +12,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',  # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'accomplishmentsweb',                      # Or path to database file if using sqlite3.
-        'USER': 'accomplishmentsweb',                      # Not used with sqlite3.
-        'PASSWORD': 'password',                  # Not used with sqlite3.
-        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
-
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '-8@1c)+ln*#c%u!cb-y8inpxo%4#5+9jp(ku+%)9*7s!cn1=e+'
+SECRET_KEY = '__regenerate_this__'
 
-# eof
+ALLOWED_HOSTS = ['www.example.com']
