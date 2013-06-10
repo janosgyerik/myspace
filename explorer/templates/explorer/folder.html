@@ -38,11 +38,15 @@
         {% endif %}
 
         {% if files %}
-            <ul class="folder files">
+            <table class="table table-striped table-hover table-condensed folder files">
                 {% for file in files %}
-                <li><a href="{{ file.href|urlencode }}" title="{{ file.name }}">{{ file.name }}</a> ({{ file.size|filesizeformat }})</li>
+                <tr>
+                    <td><a href="{{ file.href|urlencode }}" title="{{ file.name }}">{{ file.name }}</a></td>
+                    <td class="size">{{ file.size|filesizeformat }}</td>
+                    <td class="timestamp">{{ file.mtime }}</td>
+                </tr>
                 {% endfor %}
-            </ul>
+            </table>
         {% endif %}
 
     </div>

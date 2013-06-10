@@ -15,4 +15,16 @@ ul.files {
     clear: both;
 }
 
+table.files .size {
+    font-family: monospace;
+    text-align: right;
+    white-space: nowrap;
+}
+
+table.files .timestamp {
+    font-family: monospace;
+    text-align: right;
+    white-space: nowrap;
+}
+
 /**/
