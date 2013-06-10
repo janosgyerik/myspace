@@ -1,4 +1,5 @@
 import os
+import time
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -119,6 +120,7 @@ def get_dirs_and_files(relpath=None):
             if os.path.isfile(path):
                 info['name'] = item
                 info['size'] = os.path.getsize(path)
+                info['mtime'] = time.ctime(os.path.getmtime(path))
                 if relpath:
                     href = os.path.join(CONTENT_WWWROOT, relpath, item)
                 else:
