@@ -136,6 +136,7 @@ def get_dirs_and_files(relpath=None):
 
     dirs = sorted(dirs, key=lambda x: x['name'])
     files = sorted(files, key=lambda x: x['name'])
+    files.reverse()
 
     return (dirs, files)
 
