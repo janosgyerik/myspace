@@ -181,8 +181,8 @@ CONTENT_WWWROOT = '/static/content'
 
 AUTHENTICATION_BACKENDS = (
         #'django_openid_auth.auth.OpenIDBackend',
-        'accounts.auth.WhitelistedOpenIDBackend',
         'django.contrib.auth.backends.ModelBackend',
+        'accounts.auth.WhitelistedOpenIDBackend',
         )
 
 OPENID_CREATE_USERS = True
