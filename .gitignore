@@ -8,3 +8,4 @@ tmp
 /myspace/*_settings.py
 /explorer/static/content
 /local
+virtualenv
